@@ -31,7 +31,7 @@ func BuildMegaSelectionButtons(uid string) tg.ReplyMarkupClass {
 	cfg := config.Get()
 	baseURL := cfg.BaseURL
 	if baseURL == "" {
-		baseURL = fmt.Sprintf("http://localhost:%d", cfg.BaseURLPort)
+		baseURL = fmt.Sprintf("http://127.0.0.1:%d", cfg.BaseURLPort)
 	}
 	baseURL = strings.TrimSuffix(baseURL, "/")
 

@@ -167,7 +167,7 @@ func LoadConfig(path string) (*Config, error) {
 		LinksLogID:                getEnvInt64("LINKS_LOG_ID", 0),
 		TorrentTimeout:            getEnvInt("TORRENT_TIMEOUT", 0),
 		Aria2Port:                 getEnvInt("ARIA2_PORT", 6810),
-		BaseURL:                   getEnv("BASE_URL", ""),
+		BaseURL:                   getEnvURL("BASE_URL", "RAILWAY_PUBLIC_DOMAIN", "RAILWAY_STATIC_URL", ""),
 		BaseURLPort:               getEnvInt("PORT", getEnvInt("BASE_URL_PORT", 23434)),
 		MegaEmail:                 getEnv("MEGA_EMAIL", ""),
 		MegaPassword:              getEnv("MEGA_PASSWORD", ""),
@@ -276,6 +276,20 @@ func Get() *Config {
 	configLock.RLock()
 	defer configLock.RUnlock()
 	return &GlobalConfig
+}
+
+func getEnvURL(key1, key2, key3, defaultVal string) string {
+	keys := []string{key1, key2, key3}
+	for _, k := range keys {
+		val := strings.TrimSpace(os.Getenv(k))
+		if val != "" {
+			if !strings.HasPrefix(val, "http://") && !strings.HasPrefix(val, "https://") {
+				val = "https://" + val
+			}
+			return val
+		}
+	}
+	return defaultVal
 }
 
 func getEnv(key, defaultVal string) string {
@@ -420,7 +434,7 @@ func UpdateConfigVar(key, val string) error {
 		GlobalConfig.CoverImage = val
 	case "DDL_API", "THUNDER_API":
 		GlobalConfig.DDLAPI = val
-	case "BASE_URL":
+	case "BASE_URL", "RAILWAY_PUBLIC_DOMAIN", "RAILWAY_STATIC_URL":
 		GlobalConfig.BaseURL = val
 	case "BASE_URL_PORT":
 		GlobalConfig.BaseURLPort, _ = strconv.Atoi(val)
@@ -528,8 +542,8 @@ func GetConfigMap() map[string]string {
 
 	return map[string]string{
 		"OWNER_USERNAME":               GlobalConfig.OwnerUsername,
-		"USER_SESSION_STRING":         MaskSession(GlobalConfig.UserSessionString),
-		"DUMP_CHAT_ID":                strconv.FormatInt(GlobalConfig.DumpChatID, 10),
+		"USER_SESSION_STRING":          MaskSession(GlobalConfig.UserSessionString),
+		"DUMP_CHAT_ID":                 strconv.FormatInt(GlobalConfig.DumpChatID, 10),
 		"LEECH_LOG_ID":                 strconv.FormatInt(GlobalConfig.LeechLogID, 10),
 		"STATUS_LIMIT":                 strconv.Itoa(GlobalConfig.StatusLimit),
 		"STATUS_UPDATE_INTERVAL":       strconv.Itoa(GlobalConfig.StatusUpdateInterval),
