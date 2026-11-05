@@ -29,7 +29,7 @@ func StartWebServer() {
 	mux.HandleFunc("/", handleRoot)
 	mux.HandleFunc("/app/files/", handleFiles)
 
-	addr := fmt.Sprintf(":%d", port)
+	addr := fmt.Sprintf("0.0.0.0:%d", port)
 	log.Printf("[WEB SERVER] Starting Base URL web selector server on port %d...", port)
 	go func() {
 		if err := http.ListenAndServe(addr, mux); err != nil && err != http.ErrServerClosed {

@@ -891,7 +891,7 @@ func (m *LeechModule) processLeechPipeline(peer tg.InputPeerClass, msg *types.Me
 					cfg := config.Get()
 					baseURL := cfg.BaseURL
 					if baseURL == "" {
-						baseURL = fmt.Sprintf("http://localhost:%d", cfg.BaseURLPort)
+						baseURL = fmt.Sprintf("http://127.0.0.1:%d", cfg.BaseURLPort)
 					}
 					b := telegram.NewButtonMaker()
 					b.UButtonStyled("◈ "+telegram.ToSmallCaps("Select Files"), fmt.Sprintf("%s/app/files/%s", strings.TrimSuffix(baseURL, "/"), gid), "primary")
